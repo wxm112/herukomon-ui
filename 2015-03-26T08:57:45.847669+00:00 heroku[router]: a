@@ -1,0 +1,17 @@
+2015-03-26T08:57:45.847669+00:00 heroku[router]: at=info method=GET path="/" host=www.data-snippet.io request_id=99403cb1-fecf-4402-a443-848bce785c50 fwd="176.56.230.110" dyno=web.1 connect=1ms service=126ms status=200 bytes=3159
+2015-03-26T09:02:54.798514+00:00 heroku[router]: at=info method=GET path="/" host=www.data-snippet.io request_id=07b56b7b-8e1e-464b-a9be-5698ac32e933 fwd="178.79.169.144" dyno=web.1 connect=7ms service=12ms status=200 bytes=3159
+2015-03-26T09:07:53.348916+00:00 heroku[router]: at=info method=GET path="/" host=www.data-snippet.io request_id=02ecb3e5-ea46-49e1-984e-9cd06a628409 fwd="37.235.53.240" dyno=web.1 connect=1ms service=10ms status=200 bytes=3159
+2015-03-26T09:12:54.283990+00:00 heroku[router]: at=info method=GET path="/" host=www.data-snippet.io request_id=f0a5fb35-cb73-4d68-9287-f3e0f85a3708 fwd="178.62.40.233" dyno=web.1 connect=3ms service=20ms status=200 bytes=3159
+2015-03-26T09:12:54.538997+00:00 heroku[router]: at=info method=GET path="/" host=www.data-snippet.io request_id=9e43b7bd-c2f6-4cbb-a2f9-6b21edc4f170 fwd="107.170.240.141" dyno=web.1 connect=1ms service=11ms status=200 bytes=3159
+2015-03-26T09:17:55.795755+00:00 heroku[router]: at=info method=GET path="/" host=www.data-snippet.io request_id=f10f039c-97b9-4d62-a10d-02762c3025ad fwd="108.61.196.38" dyno=web.1 connect=1ms service=25ms status=200 bytes=3159
+2015-03-26T09:23:00.470040+00:00 heroku[router]: at=info method=GET path="/" host=www.data-snippet.io request_id=f3b4c161-c30f-48f6-909e-67cef887c581 fwd="176.56.230.59" dyno=web.1 connect=1ms service=46ms status=200 bytes=3159
+2015-03-26T09:28:25.906226+00:00 heroku[router]: at=info method=GET path="/" host=www.data-snippet.io request_id=b42d18e2-059f-4714-b114-655572cf1ad2 fwd="107.170.227.24" dyno=web.1 connect=1ms service=30ms status=200 bytes=3159
+2015-03-26T09:33:22.648156+00:00 heroku[router]: at=info method=GET path="/" host=www.data-snippet.io request_id=3249fa43-c048-4991-a24a-8e6045df83d6 fwd="108.61.196.165" dyno=web.1 connect=1ms service=14ms status=200 bytes=3159
+2015-03-26T09:38:36.136091+00:00 heroku[router]: at=info method=GET path="/" host=www.data-snippet.io request_id=b7254d87-1614-4e6b-a3b8-3132e095b460 fwd="188.226.184.152" dyno=web.1 connect=1ms service=38ms status=200 bytes=3159
+2015-03-26T09:43:48.360827+00:00 heroku[router]: at=info method=GET path="/" host=www.data-snippet.io request_id=5cbde79c-8d07-48b1-a5ee-61321e828b05 fwd="176.56.230.110" dyno=web.1 connect=1ms service=31ms status=200 bytes=3159
+2015-03-26T09:48:54.276127+00:00 heroku[router]: at=info method=GET path="/" host=www.data-snippet.io request_id=6310fcbd-86e5-455d-b8e3-b0d4d96eda83 fwd="188.226.184.152" dyno=web.1 connect=1ms service=21ms status=200 bytes=3159
+
+[{date: '2015-03-26T09:48:54.276127+00:00', dyno: 'web.1', status: 200, client: '188.226.184.152', connect: 1, service: 21, bytes: 3159}]
+{},
+{},
+{}]
