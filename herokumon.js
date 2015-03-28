@@ -1,62 +1,61 @@
-var Herokumon = {
+
+var bars = {
   requests: [],
-  w: 1400,
-  h: 700,
-  padding: 100,
-  top: 200,
+  WIDTH: 1400,
+  HEIGHT: 700,
   MAX_REQUEST_TIME: 2000,
   NUMBER_OF_REQUESTS_TO_SHOW: 200,
-  xScale: function () { 
-    return d3.scale.linear()
-             .domain([0, Herokumon.NUMBER_OF_REQUESTS_TO_SHOW])
-             .range([Herokumon.padding, Herokumon.w - Herokumon.padding * 2]); 
-  },
+  MAX_BAR_HEIGHT: 40,
+  // xScale: function () { 
+  //   return d3.scale.linear()
+  //            .domain([0, bars.NUMBER_OF_REQUESTS_TO_SHOW])
+  //            .range([bars.padding, bars.w - bars.padding * 2]); 
+  // },
 
   heightScale: function () { 
     return d3.scale.pow().exponent(.25)
-             .domain([0, Herokumon.MAX_REQUEST_TIME])
-             .range([0, 40]);
+             .domain([0, bars.MAX_REQUEST_TIME])
+             .range([0, bars.MAX_BAR_HEIGHT]);
   },
 
   colourScale: function() {
     return d3.scale.pow().exponent(.25)
-             .domain([0, Herokumon.MAX_REQUEST_TIME])
+             .domain([0, bars.MAX_REQUEST_TIME])
              .range([0, 255]);
   },
 
   drawSVG: function () {
-    if (!Herokumon.svg) {
-      console.log("Creating new SVG");
-      Herokumon.svg = d3.select("#container")
+    if (!bars.svg) {
+      bars.svg = d3.select("#container")
                         .append("svg")
-                        .attr("width", Herokumon.w)
-                        .attr("height", Herokumon.h);
+                        .attr("width", bars.WIDTH)
+                        .attr("height", bars.HEIGHT);
     }
-    return Herokumon.svg;
+    return bars.svg;
   },
   rects: function () {
-    var range = (Herokumon.w - Herokumon.padding * 2)/Herokumon.NUMBER_OF_REQUESTS_TO_SHOW;
+    var bar_width = bars.WIDTH/bars.NUMBER_OF_REQUESTS_TO_SHOW;
     var svg = this.drawSVG();
     var selection = svg.selectAll('rect').data(this.requests);
 
     selection.enter()
       .append('rect')
-        .attr("x", function (d, i) { return Herokumon.xScale()(i*1) }) 
-        .attr("width", Herokumon.xScale()(1)-Herokumon.padding);
+        .attr("x", function (d, i) { return bar_width*i }) 
+        .attr("width", bar_width);
 
     selection.exit()
       .remove();
 
     selection
-      .attr("height", function(d) { return Herokumon.heightScale()(d.service + d.connect); })
-      .attr("y", function(d) { return Herokumon.top - Herokumon.heightScale()(d.service + d.connect); })
-      .attr("fill", function(d) { return "rgb(" + Math.floor(Herokumon.colourScale()(d.service + d.connect)) + ", 149, 228)" })
+      .attr("height", function(d) { return bars.heightScale()(d.service + d.connect); })
+      .attr("y", function(d) { return bars.MAX_BAR_HEIGHT - bars.heightScale()(d.service + d.connect); })
+      .attr("fill", function(d) { return "rgb(" + Math.floor(bars.colourScale()(d.service + d.connect)) + ", 149, 228)" })
 
   },
 
   onRequest: function(request) {
     this.requests.push(request);
-    if (this.requests.length > Herokumon.NUMBER_OF_REQUESTS_TO_SHOW) {
+    if (this.requests.length > bars.NUMBER_OF_REQUESTS_TO_SHOW) {
       this.requests.shift();
     };
     this.rects();
@@ -64,9 +63,8 @@ var Herokumon = {
 };
 
 window.onload = function () {
-  var socket = io('https://herokumon.herokuapp.com');
+  var socket = io('https://Herokumon.herokuapp.com');
   socket.on('request', function(data) {
-    console.log("Request time " + (data.service + data.connect));
-    Herokumon.onRequest(data);
+    bars.onRequest(data);
   });
 };
