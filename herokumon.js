@@ -1,16 +1,31 @@
-
-var bars = {
-  requests: [],
+var app = {
   WIDTH: 1400,
   HEIGHT: 700,
-  MAX_REQUEST_TIME: 2000,
-  NUMBER_OF_REQUESTS_TO_SHOW: 200,
-  MAX_BAR_HEIGHT: 40,
+
+  drawSVG: function () {
+    if (!app.svg) {
+      app.svg = d3.select("#container")
+                        .append("svg")
+                        .attr("width", app.WIDTH)
+                        .attr("height", app.HEIGHT);
+    }
+    return app.svg;
+  }
+
   // xScale: function () { 
   //   return d3.scale.linear()
   //            .domain([0, bars.NUMBER_OF_REQUESTS_TO_SHOW])
   //            .range([bars.padding, bars.w - bars.padding * 2]); 
   // },
+}
+
+
+var bars = {
+  requests: [],
+  MAX_REQUEST_TIME: 2000,
+  NUMBER_OF_REQUESTS_TO_SHOW: 200,
+  MAX_BAR_HEIGHT: 40,
+  
 
   heightScale: function () { 
     return d3.scale.pow().exponent(.25)
@@ -24,18 +39,10 @@ var bars = {
              .range([0, 255]);
   },
 
-  drawSVG: function () {
-    if (!bars.svg) {
-      bars.svg = d3.select("#container")
-                        .append("svg")
-                        .attr("width", bars.WIDTH)
-                        .attr("height", bars.HEIGHT);
-    }
-    return bars.svg;
-  },
+  
   rects: function () {
-    var bar_width = bars.WIDTH/bars.NUMBER_OF_REQUESTS_TO_SHOW;
-    var svg = this.drawSVG();
+    var bar_width = app.WIDTH/bars.NUMBER_OF_REQUESTS_TO_SHOW;
+    var svg = app.drawSVG();
     var selection = svg.selectAll('rect').data(this.requests);
 
     selection.enter()
