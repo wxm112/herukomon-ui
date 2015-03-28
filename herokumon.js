@@ -11,14 +11,7 @@ var app = {
     }
     return app.svg;
   }
-
-  // xScale: function () { 
-  //   return d3.scale.linear()
-  //            .domain([0, bars.NUMBER_OF_REQUESTS_TO_SHOW])
-  //            .range([bars.padding, bars.w - bars.padding * 2]); 
-  // },
-}
-
+};
 
 var bars = {
   requests: [],
@@ -69,9 +62,47 @@ var bars = {
   }
 };
 
+var pies = {
+  dynos: [],
+  outer_r: 50,
+  innter_r: 15,
+  padding: 60,
+  top: 200,
+
+  circles: function() {
+    var svg = app.drawSVG();
+    var selection = svg.selectAll('circle').data(this.dynos);
+    var pie_space = app.WIDTH/pies.dynos.length;
+
+    selection.enter()
+      .append('circle')
+        .attr('cy', pies.top)
+        .attr('r', pies.outer_r)
+        .attr('fill', 'yellow');
+
+    selection.exit()
+      .remove();
+
+    selection
+      .attr("cx", function(d,i) {
+        var padding = pie_space/2;
+        return padding + i*pie_space;
+      });
+
+    
+  },
+
+  onRequest: function(request) {
+    this.dynos.push(request.dyno);
+    this.dynos = _.uniq(this.dynos)
+    this.circles();
+  }
+};
+
 window.onload = function () {
   var socket = io('https://Herokumon.herokuapp.com');
   socket.on('request', function(data) {
     bars.onRequest(data);
+    pies.onRequest(data);
   });
 };
