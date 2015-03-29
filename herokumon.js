@@ -2,8 +2,8 @@
   var r = function(max) { return Math.random()*max; };
   var s = function(value) {return Math.sqrt(value);};
 
-
 var app = {
+  requestsReceived: 0,
   WIDTH: 1400,
   HEIGHT: 400,
   NUMBER_OF_REQUESTS_TO_SHOW: 200,
@@ -69,7 +69,7 @@ var bars = {
   draw: function () {
     var bar_width = app.WIDTH/app.NUMBER_OF_REQUESTS_TO_SHOW;
     var svg = app.drawSVG();
-    var selection = svg.selectAll('rect').data(app.requests);
+    var selection = app.svg.selectAll('rect').data(app.requests);
 
     selection.enter()
       .append('rect')
@@ -88,10 +88,15 @@ var bars = {
 };
 
 var dynos = {
-  getChart: function() {
-    if(!this.chart) {
+  getChart: function(key) {
+    var id = key.match(/\d+?/);
+
+    donutElement = $('#donut-'+id);
+    if(donutElement.length == 0) { // If this dyno div does not yet exist
+      $('<div>').attr('id', 'donut-' + id).addClass('donut').appendTo($('#container'));
+
       this.chart = c3.generate({
-        bindto: '.donut',
+        bindto: '#donut-'+id, 
         data: {
             columns: [
                 ['200s/300s', 0],
@@ -101,28 +106,35 @@ var dynos = {
             type : 'donut'
         },
         donut: {
-            title: "dyno name here"
+            title: 'donut-' + id
         }
       });
     }
     return this.chart;
   },
-  draw: function() {
-    var dyno = app.dynos['web.0'];
 
-    // {a: b, c: d} => [[a, b], [c, d]]
-
-    this.getChart().load({
+  draw: function(key) {
+    var dyno = app.dynos[key];
+    this.getChart(key).load({
         columns: Object.keys(dyno).map(function(k){ return [k, dyno[k]]; })
+    });
+  },
+
+  drawDynos: function () {
+    var array = Object.keys(app.dynos).map(function(key) { return key});
+    _.each(array, function(key){ 
+      dynos.draw(key);
     });
   }
 };
 
 var onRequestFunction = function(data) {
+  app.requestsReceived++;
+
   data.dyno = 'web.0';// + f(r(5));
   app.onRequest(data);
-  dynos.draw();
-  bars.draw();
+  dynos.drawDynos();
+  // bars.draw();
 };
 
 window.onload = function () {
