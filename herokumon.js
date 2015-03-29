@@ -129,11 +129,10 @@ var dynos = {
 };
 
 var onRequestFunction = function(data) {
-  data.dyno = 'web.' + f(r(3));
+  data.dyno = 'web.' + f(r(5));
   app.onRequest(data);
-  bars.draw();
   dynos.drawDynos();
-  
+  bars.draw();
 };
 
 window.onload = function () {
