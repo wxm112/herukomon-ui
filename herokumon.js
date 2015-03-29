@@ -45,7 +45,7 @@ var bars = {
   MAX_REQUEST_TIME: 2000,
   MAX_BAR_HEIGHT: 80,
   WIDTH: 700,
-  HEIGHT: 100,
+  HEIGHT: 80,
   svg: null,
 
   getSVG: function() {
@@ -82,7 +82,7 @@ var bars = {
 
     selection 
       .attr("height", function(d) { return bars.heightScale()(d.service + d.connect); })
-      .attr("y", function(d) { return bars.MAX_BAR_HEIGHT - bars.heightScale()(d.service + d.connect); })
+      .attr("y", function(d) { return bars.HEIGHT - bars.heightScale()(d.service + d.connect); })
       .attr("fill", function(d) { return "rgb(" + Math.floor(bars.colourScale()(d.service + d.connect)) + ", 149, 228)" })
 
   }

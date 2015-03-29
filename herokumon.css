@@ -3,8 +3,14 @@ div.donut {
   /*width: 200px;*/
 }
 
+div.bars {
+  width: 700px;
+  height: 100px;
+  margin: auto;
+}
+
 div.bars svg {
-  margin-left: 25%;
+  border: 2px solid rgb(255,127,14);
 }
 
 html, body {
