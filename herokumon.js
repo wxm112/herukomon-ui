@@ -88,6 +88,7 @@ var bars = {
 };
 
 var dynos = {
+  charts: {},
   getChart: function(key) {
     var id = key.match(/\d+?/);
 
@@ -95,8 +96,9 @@ var dynos = {
     if(donutElement.length == 0) { // If this dyno div does not yet exist
       $('<div>').attr('id', 'donut-' + id).addClass('donut').appendTo($('#container'));
 
-      this.chart = c3.generate({
+      this.charts[id] = c3.generate({
         bindto: '#donut-'+id, 
+        transition: {duration: 0},
         data: {
             columns: [
                 ['200s/300s', 0],
@@ -106,32 +108,28 @@ var dynos = {
             type : 'donut'
         },
         donut: {
-            title: 'donut-' + id
+            title: key
         }
       });
     }
-    return this.chart;
+    return this.charts[id];
   },
 
   draw: function(key) {
     var dyno = app.dynos[key];
+    var cols = Object.keys(dyno).map(function(k){ return [k, dyno[k]]; });
     this.getChart(key).load({
-        columns: Object.keys(dyno).map(function(k){ return [k, dyno[k]]; })
+        columns: cols,
     });
   },
 
   drawDynos: function () {
-    var array = Object.keys(app.dynos).map(function(key) { return key});
-    _.each(array, function(key){ 
-      dynos.draw(key);
-    });
+    Object.keys(app.dynos).forEach(function(key){ dynos.draw(key); });
   }
 };
 
 var onRequestFunction = function(data) {
-  app.requestsReceived++;
-
-  data.dyno = 'web.0';// + f(r(5));
+  data.dyno = 'web.' + f(r(3));
   app.onRequest(data);
   dynos.drawDynos();
   // bars.draw();

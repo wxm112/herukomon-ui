@@ -1,5 +1,7 @@
-
+div.donut {
+  display:inline-block;
+}
 
 svg {
-  background: #e0e0e0;
+  /*background: #e0e0e0;*/
 }
