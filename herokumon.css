@@ -6,3 +6,9 @@ div.donut {
 div.bars svg {
   margin-left: 25%;
 }
+
+html, body {
+  margin:0;
+  padding:0;
+}
+

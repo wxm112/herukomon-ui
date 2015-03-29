@@ -4,20 +4,15 @@
 
 var app = {
   requestsReceived: 0,
-  WIDTH: 700,
-  HEIGHT: 100,
   NUMBER_OF_REQUESTS_TO_SHOW: 200,
   requests: [],
   dynos: {},
 
-  drawSVG: function () {
-    if (!app.svg) {
-      app.svg = d3.select(".bars")
-                        .append("svg")
-                        .attr("width", app.WIDTH)
-                        .attr("height", app.HEIGHT);
-    }
-    return app.svg;
+  createSVG: function (selector, width, height) {
+    return d3.select(selector).
+      append('svg').
+        attr("width", width).
+        attr("height", height);
   },
 
   onRequest: function(request) {
@@ -49,7 +44,16 @@ var app = {
 var bars = {
   MAX_REQUEST_TIME: 2000,
   MAX_BAR_HEIGHT: 80,
-  
+  WIDTH: 700,
+  HEIGHT: 100,
+  svg: null,
+
+  getSVG: function() {
+    if(!this.svg) {
+      this.svg = app.createSVG('.bars', this.WIDTH, this.HEIGHT);
+    }
+    return this.svg;
+  },
 
   heightScale: function () { 
     return d3.scale.pow().exponent(.25)
@@ -65,9 +69,8 @@ var bars = {
 
   
   draw: function () {
-    var bar_width = app.WIDTH/app.NUMBER_OF_REQUESTS_TO_SHOW;
-    var svg = app.drawSVG();
-    var selection = app.svg.selectAll('rect').data(app.requests);
+    var bar_width = this.WIDTH/app.NUMBER_OF_REQUESTS_TO_SHOW;
+    var selection = this.getSVG().selectAll('rect').data(app.requests);
 
     selection.enter()
       .append('rect')
@@ -119,7 +122,7 @@ var dynos = {
     this.getChart(key).load({
         columns: cols,
     });
-    var width = app.WIDTH*2/Object.keys(app.dynos).length;
+    var width = (window.innerWidth)/Object.keys(app.dynos).length;
     $('.donut').css('width', width);
   },
 
