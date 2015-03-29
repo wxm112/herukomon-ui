@@ -5,7 +5,7 @@
 var app = {
   requestsReceived: 0,
   WIDTH: 1400,
-  HEIGHT: 400,
+  HEIGHT: 100,
   NUMBER_OF_REQUESTS_TO_SHOW: 200,
   requests: [],
   dynos: {},
@@ -121,6 +121,8 @@ var dynos = {
     this.getChart(key).load({
         columns: cols,
     });
+    var width = app.WIDTH/Object.keys(app.dynos).length;
+    $('.donut').css('width', width);
   },
 
   drawDynos: function () {
@@ -129,10 +131,11 @@ var dynos = {
 };
 
 var onRequestFunction = function(data) {
-  data.dyno = 'web.' + f(r(3));
+  data.dyno = 'web.' + f(r(4));
   app.onRequest(data);
+  bars.draw();
   dynos.drawDynos();
-  // bars.draw();
+  
 };
 
 window.onload = function () {

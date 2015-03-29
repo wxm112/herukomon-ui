@@ -1,5 +1,6 @@
 div.donut {
   display:inline-block;
+  /*width: 200px;*/
 }
 
 svg {
