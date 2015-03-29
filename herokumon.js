@@ -101,35 +101,28 @@ var dynos = {
             type : 'donut'
         },
         donut: {
-            title: "Requests"
+            title: "dyno name here"
         }
       });
     }
     return this.chart;
   },
   draw: function() {
-    var rOk   = this.status.filter(function(status){ return status >= 200 && status < 400 }).length;
-    var r400s = this.status.filter(function(status){ return status >= 400 && status < 500 }).length;
-    var r500s = this.status.filter(function(status){ return status >= 500 && status < 600 }).length;
+    var dyno = app.dynos['web.0'];
+
+    // {a: b, c: d} => [[a, b], [c, d]]
 
     this.getChart().load({
-        columns: [
-            ['200s/300s', rOk],
-            ['400s', r400s],
-            ['500s', r500s]
-        ]
+        columns: Object.keys(dyno).map(function(k){ return [k, dyno[k]]; })
     });
   }
-  
-    // this.draw();
-  
 };
 
 var onRequestFunction = function(data) {
-  data.dyno = 'web.' + f(r(5));
+  data.dyno = 'web.0';// + f(r(5));
   app.onRequest(data);
-  // pies.onRequest(data);
-  // dynos.onRequest(data);
+  dynos.draw();
+  bars.draw();
 };
 
 window.onload = function () {
