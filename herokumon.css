@@ -3,6 +3,6 @@ div.donut {
   /*width: 200px;*/
 }
 
-svg {
-  /*background: #e0e0e0;*/
+div.bars svg {
+  margin-left: 25%;
 }

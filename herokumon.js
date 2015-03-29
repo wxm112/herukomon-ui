@@ -4,7 +4,7 @@
 
 var app = {
   requestsReceived: 0,
-  WIDTH: 1400,
+  WIDTH: 700,
   HEIGHT: 100,
   NUMBER_OF_REQUESTS_TO_SHOW: 200,
   requests: [],
@@ -12,7 +12,7 @@ var app = {
 
   drawSVG: function () {
     if (!app.svg) {
-      app.svg = d3.select("#container")
+      app.svg = d3.select(".bars")
                         .append("svg")
                         .attr("width", app.WIDTH)
                         .attr("height", app.HEIGHT);
@@ -30,8 +30,6 @@ var app = {
     if(shiftedRequest) {
       this.updateDynoStatus(shiftedRequest, -1);
     };
-    
-    // bars.draw();
   },
 
   updateDynoStatus: function(request,n) {
@@ -94,11 +92,11 @@ var dynos = {
 
     donutElement = $('#donut-'+id);
     if(donutElement.length == 0) { // If this dyno div does not yet exist
-      $('<div>').attr('id', 'donut-' + id).addClass('donut').appendTo($('#container'));
+      $('<div>').attr('id', 'donut-' + id).addClass('donut').appendTo($('.dynos'));
 
       this.charts[id] = c3.generate({
         bindto: '#donut-'+id, 
-        transition: {duration: 0},
+        // transition: {duration: 1000},
         data: {
             columns: [
                 ['200s/300s', 0],
@@ -121,7 +119,7 @@ var dynos = {
     this.getChart(key).load({
         columns: cols,
     });
-    var width = app.WIDTH/Object.keys(app.dynos).length;
+    var width = app.WIDTH*2/Object.keys(app.dynos).length;
     $('.donut').css('width', width);
   },
 
@@ -131,7 +129,7 @@ var dynos = {
 };
 
 var onRequestFunction = function(data) {
-  data.dyno = 'web.' + f(r(4));
+  data.dyno = 'web.' + f(r(3));
   app.onRequest(data);
   bars.draw();
   dynos.drawDynos();
@@ -142,10 +140,3 @@ window.onload = function () {
   var socket = io('https://Herokumon.herokuapp.com');
   socket.on('request', onRequestFunction);
 };
-
-//   onRequest: function(request) {
-//     this.dynos.push(request.dyno);
-//     this.dynos = _.uniq(this.dynos)
-//     this.circles();
-//   }
-// };
