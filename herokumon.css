@@ -1,16 +1,28 @@
 div.donut {
   display:inline-block;
-  /*width: 200px;*/
-}
+  margin-top: -8;
+  }
 
 div.bars {
   width: 700px;
-  height: 100px;
+  height: 81px;
   margin: auto;
 }
 
 div.bars svg {
   border: 2px solid rgb(255,127,14);
+}
+
+div.lines {
+  height: 250px;
+  margin: auto;
+  margin-bottom: -8px
+}
+
+div.lines svg {
+  
+  width: 100%;
+  margin-top: 0;
 }
 
 html, body {

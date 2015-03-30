@@ -131,11 +131,67 @@ var dynos = {
   }
 };
 
+var lines = {
+  WIDTH: 1000,
+  HEIGHT: 250,
+  svg: null,
+  line: null,
+  totalDynos: function(){
+    return Object.keys(app.dynos);
+  },
+  xScale: function () { 
+    return d3.scale.linear()
+             .domain([0, 1440])
+             .range([375, 375+700]);
+  },
+  x: function(){
+    return ($(document).width()/this.totalDynos().length+1)/2;
+  },
+
+  getSVG: function() {
+    if(!this.svg) {
+      this.svg = app.createSVG('.lines', this.WIDTH, this.HEIGHT);
+    }
+    return this.svg;
+  },
+
+  draw: function(){
+    var selection = this.getSVG().selectAll('line').data(this.totalDynos());
+      selection.enter()
+                .append('line');
+                
+
+      selection.exit()
+      .remove();
+
+      selection.attr('x1', function(d,i) {
+                            if (i === 0){
+                              return lines.xScale()(lines.x());
+                            } else {
+                              return lines.xScale()(lines.x() + i * lines.x()*2);
+                            } 
+                    })
+                .attr('y1', 0)
+                .attr('x2', function(d,i) {
+                            if (i === 0){
+                              return lines.x();
+                            } else {
+                              return lines.x() + i * lines.x()*2;
+                            } 
+                    })
+                .attr('y2', lines.HEIGHT)
+                .attr('stroke-width', 2)
+                .attr('stroke', "black");
+    
+  },
+};
+
 var onRequestFunction = function(data) {
-  data.dyno = 'web.' + f(r(5));
+  data.dyno = 'web.'+ f(r(4));
   app.onRequest(data);
-  dynos.drawDynos();
   bars.draw();
+  dynos.drawDynos();
+  lines.draw();
 };
 
 window.onload = function () {
