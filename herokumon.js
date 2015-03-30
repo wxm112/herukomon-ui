@@ -83,7 +83,7 @@ var bars = {
     selection 
       .attr("height", function(d) { return bars.heightScale()(d.service + d.connect); })
       .attr("y", function(d) { return bars.HEIGHT - bars.heightScale()(d.service + d.connect); })
-      .attr("fill", function(d) { return "rgb(" + Math.floor(bars.colourScale()(d.service + d.connect)) + ", 149, 228)" })
+      .attr("fill", function(d) { return "rgb(" + Math.floor(bars.colourScale()(d.service + d.connect)) + ", 127, 14)" })
 
   }
 };
@@ -143,6 +143,11 @@ var lines = {
              .domain([0, 1440])
              .range([375, 375+700]);
   },
+  strokeScale: function () { 
+    return d3.scale.linear()
+             .domain([0, 200])
+             .range([0, 20]);
+  },
   x: function(){
     return ($(document).width()/this.totalDynos().length+1)/2;
   },
@@ -179,8 +184,12 @@ var lines = {
                             } 
                     })
                 .attr('y2', lines.HEIGHT)
-                .attr('stroke-width', 2)
-                .attr('stroke', "black");
+                .attr('stroke-width', function(d){
+                  // debugger;
+                  var num = app.dynos[d]['200s/300s']+ app.dynos[d]['400s']+app.dynos[d]['500s'];
+                  return lines.strokeScale()(num);
+                })
+                .attr('stroke', '#FF9800');
     
   },
 };
