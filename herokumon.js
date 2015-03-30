@@ -133,9 +133,8 @@ var dynos = {
 
 var lines = {
   WIDTH: 1000,
-  HEIGHT: 250,
+  HEIGHT: 200,
   svg: null,
-  line: null,
   totalDynos: function(){
     return Object.keys(app.dynos);
   },
@@ -171,7 +170,7 @@ var lines = {
                               return lines.xScale()(lines.x() + i * lines.x()*2);
                             } 
                     })
-                .attr('y1', 0)
+                .attr('y1', 3)
                 .attr('x2', function(d,i) {
                             if (i === 0){
                               return lines.x();
@@ -187,7 +186,7 @@ var lines = {
 };
 
 var onRequestFunction = function(data) {
-  data.dyno = 'web.'+ f(r(4));
+  data.dyno = 'web.'+ f(r(3));
   app.onRequest(data);
   bars.draw();
   dynos.drawDynos();
