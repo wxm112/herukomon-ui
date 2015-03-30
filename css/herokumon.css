@@ -10,7 +10,7 @@ div.bars {
 }
 
 div.bars svg {
-  border: 2px solid #FFE0B2;
+  border-bottom: 5px solid #888;
 }
 
 div.lines {
@@ -27,27 +27,28 @@ div.lines svg {
 html, body {
   margin:0;
   padding:0;
+  background-color: #F7F7F7;
 }
 
 #container {
+  margin: auto;
   margin-top: 8%;
 }
 
 
 .logo {
   font-family: 'Kreon', serif;
-  font-size: 280px;
+  font-size: 200px;
   text-align: center;
   color: #727272;
   position: fixed;
   top: 20px;
   left: 10px;
   opacity: 1;
-  transition: opacity 3s;
+  transition: opacity 5s, font-size 2s;
 }
 
-.invisible{
+.invisible {
   opacity: 0;
+  font-size: 10px;
 }
-
-

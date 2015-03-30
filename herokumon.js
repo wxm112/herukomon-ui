@@ -1,18 +1,24 @@
-  var f = function(value) {return Math.floor(value);};
-  var r = function(max) { return Math.random()*max; };
-  var s = function(value) {return Math.sqrt(value);};
+var f = function(value) { return Math.floor(value); };
+var r = function(max) { return Math.random() * max; };
+var s = function(value) { return Math.sqrt(value);  };
 
 var app = {
-  requestsReceived: 0,
   NUMBER_OF_REQUESTS_TO_SHOW: 200,
+  requestsReceived: 0,
   requests: [],
+  colours: {
+    '200s/300s': 'rgb(44, 160, 44)',
+    '400s': 'rgb(208, 87, 207)',
+    '500s': 'rgb(236, 85, 85)'
+  },
+
   dynos: {},
 
-  createSVG: function (selector, width, height) {
+  createSVG: function(selector, width, height) {
     return d3.select(selector).
-      append('svg').
-        attr("width", width).
-        attr("height", height);
+    append('svg').
+    attr("width", width).
+    attr("height", height);
   },
 
   onRequest: function(request) {
@@ -22,21 +28,25 @@ var app = {
       shiftedRequest = this.requests.shift();
     };
     this.updateDynoStatus(request, 1);
-    if(shiftedRequest) {
+    if (shiftedRequest) {
       this.updateDynoStatus(shiftedRequest, -1);
     };
   },
 
-  updateDynoStatus: function(request,n) {
+  updateDynoStatus: function(request, n) {
     if (!this.dynos[request.dyno]) {
-       this.dynos[request.dyno] = {'200s/300s': 0, '400s': 0, '500s': 0};
+      this.dynos[request.dyno] = {
+        '200s/300s': 0,
+        '400s': 0,
+        '500s': 0,
+      };
     }
     if (request.status >= 200 && request.status < 400) {
       this.dynos[request.dyno]['200s/300s'] += n;
     } else if (request.status >= 400 && request.status < 500) {
-     this.dynos[request.dyno]['400s'] += n;
+      this.dynos[request.dyno]['400s'] += n;
     } else if (request.status >= 500 && request.status < 600) {
-     this.dynos[request.dyno]['500s'] += n;
+      this.dynos[request.dyno]['500s'] += n;
     }
   }
 };
@@ -49,42 +59,47 @@ var bars = {
   svg: null,
 
   getSVG: function() {
-    if(!this.svg) {
+    if (!this.svg) {
       this.svg = app.createSVG('.bars', this.WIDTH, this.HEIGHT);
     }
     return this.svg;
   },
 
-  heightScale: function () { 
+  heightScale: function() {
     return d3.scale.pow().exponent(.25)
-             .domain([0, bars.MAX_REQUEST_TIME])
-             .range([0, bars.MAX_BAR_HEIGHT]);
+      .domain([0, bars.MAX_REQUEST_TIME])
+      .range([0, bars.MAX_BAR_HEIGHT]);
   },
 
-  colourScale: function() {
-    return d3.scale.pow().exponent(.25)
-             .domain([0, bars.MAX_REQUEST_TIME])
-             .range([0, 255]);
-  },
-
-  
-  draw: function () {
-    var bar_width = this.WIDTH/app.NUMBER_OF_REQUESTS_TO_SHOW;
+  draw: function() {
+    var bar_width = this.WIDTH / app.NUMBER_OF_REQUESTS_TO_SHOW;
     var selection = this.getSVG().selectAll('rect').data(app.requests);
 
     selection.enter()
       .append('rect')
-        .attr("x", function (d, i) { return bar_width*i }) 
-        .attr("width", bar_width);
+      .attr("x", function(d, i) {
+        return bar_width * i
+      })
+      .attr("width", bar_width);
 
     selection.exit()
       .remove();
 
-    selection 
-      .attr("height", function(d) { return bars.heightScale()(d.service + d.connect); })
-      .attr("y", function(d) { return bars.HEIGHT - bars.heightScale()(d.service + d.connect); })
-      .attr("fill", function(d) { return "rgb(" + Math.floor(bars.colourScale()(d.service + d.connect)) + ", 127, 14)" })
-
+    selection
+      .attr("height", function(d) {
+        return bars.heightScale()(d.service + d.connect);
+      })
+      .attr("y", function(d) {
+        return bars.HEIGHT - bars.heightScale()(d.service + d.connect);
+      })
+      .attr("fill", function(d) {
+        if (d.status >= 200 && d.status < 400) {
+          return app.colours['200s/300s'];
+        } else if (d.status >= 400 && d.status < 500) {
+          return app.colours['400s'];
+        } else
+          return app.colours['500s'];
+      });
   }
 };
 
@@ -93,22 +108,23 @@ var dynos = {
   getChart: function(key) {
     var id = key.match(/\d+?/);
 
-    donutElement = $('#donut-'+id);
-    if(donutElement.length == 0) { // If this dyno div does not yet exist
+    donutElement = $('#donut-' + id);
+    if (donutElement.length == 0) { // If this dyno div does not yet exist
       $('<div>').attr('id', 'donut-' + id).addClass('donut').appendTo($('.dynos'));
 
       this.charts[id] = c3.generate({
-        bindto: '#donut-'+id, 
+        bindto: '#donut-' + id,
         data: {
-            columns: [
-                ['200s/300s', 0],
-                ['400s', 0],
-                ['500s', 0]
-            ],
-            type : 'donut'
+          columns: [
+            ['200s/300s', 0],
+            ['400s', 0],
+            ['500s', 0]
+          ],
+          type: 'donut',
+          colors: app.colours,
         },
         donut: {
-            title: key
+          title: key
         }
       });
     }
@@ -117,16 +133,20 @@ var dynos = {
 
   draw: function(key) {
     var dyno = app.dynos[key];
-    var cols = Object.keys(dyno).map(function(k){ return [k, dyno[k]]; });
-    this.getChart(key).load({
-        columns: cols,
+    var cols = Object.keys(dyno).map(function(k) {
+      return [k, dyno[k]];
     });
-    var width = (window.innerWidth)/Object.keys(app.dynos).length;
+    this.getChart(key).load({
+      columns: cols,
+    });
+    var width = (window.innerWidth) / Object.keys(app.dynos).length;
     $('.donut').css('width', width);
   },
 
-  drawDynos: function () {
-    Object.keys(app.dynos).forEach(function(key){ dynos.draw(key); });
+  drawDynos: function() {
+    Object.keys(app.dynos).forEach(function(key) {
+      dynos.draw(key);
+    });
   }
 };
 
@@ -134,65 +154,79 @@ var lines = {
   WIDTH: 1000,
   HEIGHT: 200,
   svg: null,
-  totalDynos: function(){
+  totalDynos: function() {
     return Object.keys(app.dynos);
   },
-  strokeScale: function () { 
+  strokeScale: function() {
     return d3.scale.linear()
-             .domain([0, 200])
-             .range([0, 20]);
+      .domain([0, app.NUMBER_OF_REQUESTS_TO_SHOW])
+      .range([0, 30]);
   },
-  x: function(){
-    return ($(document).width()/this.totalDynos().length+1)/2;
+  x: function() {
+    return ($(document).width() / this.totalDynos().length + 1) / 2;
   },
 
   getSVG: function() {
-    if(!this.svg) {
+    if (!this.svg) {
       this.svg = app.createSVG('.lines', this.WIDTH, this.HEIGHT);
     }
     return this.svg;
   },
 
-  draw: function(){
+  draw: function() {
     var selection = this.getSVG().selectAll('line').data(this.totalDynos());
-      selection.enter()
-                .append('line');
-                
 
-      selection.exit()
+    selection.enter()
+      .append('line')
+      .append("svg:title");
+
+    selection.exit()
       .remove();
 
-      selection.attr('x1', function() {
-                            return $(document).width()/2;
-                    })
-                .attr('y1', 3)
-                .attr('x2', function(d,i) {
-                            if (i === 0){
-                              return lines.x();
-                            } else {
-                              return lines.x() + i * lines.x()*2;
-                            } 
-                    })
-                .attr('y2', lines.HEIGHT)
-                .attr('stroke-width', function(d){
-                  var num = app.dynos[d]['200s/300s']+ app.dynos[d]['400s']+app.dynos[d]['500s'];
-                  return lines.strokeScale()(num);
-                })
-                .attr('stroke', '#FF9800');
-    
+    selection.attr('x1', function() {
+        return $(document).width() / 2;
+      })
+      .attr('y1', 3)
+      .attr('x2', function(d, i) {
+        if (i === 0) {
+          return lines.x();
+        } else {
+          return lines.x() + i * lines.x() * 2;
+        }
+      })
+      .attr('y2', lines.HEIGHT)
+      .attr('stroke-width', function(d) {
+        var num = app.dynos[d]['200s/300s'] + app.dynos[d]['400s'] + app.dynos[d]['500s'];
+        return lines.strokeScale()(num);
+      })
+      .attr('stroke', '#888');
+
+    this.getSVG().selectAll('line title').data(this.totalDynos())
+      .text(function(d) {
+        var num = app.dynos[d]['200s/300s'] + app.dynos[d]['400s'] + app.dynos[d]['500s'];
+        console.log(num + " Requests");
+        return num + " Requests";
+      });
   },
 };
 
 var onRequestFunction = function(data) {
-  data.dyno = 'web.'+ f(r(5));
+  data.dyno = 'web.' + f(r(5));
+  if(r(100)<1) {
+    data.status = '503';
+  }
   app.onRequest(data);
   bars.draw();
   dynos.drawDynos();
   lines.draw();
 };
 
-window.onload = function () {
-  $('.logo').addClass('invisible');
-  var socket = io('https://Herokumon.herokuapp.com');
-  socket.on('request', onRequestFunction);
+window.onload = function() {
+  setTimeout(function() {
+    $('.logo').addClass('invisible');
+  }, 2000);
+  setTimeout(function() {
+    var socket = io('https://Herokumon.herokuapp.com');
+    socket.on('request', onRequestFunction);
+  }, 500);
 };
