@@ -184,7 +184,7 @@ var lines = {
 };
 
 var onRequestFunction = function(data) {
-  data.dyno = 'web.'+ f(r(2));
+  data.dyno = 'web.'+ f(r(5));
   app.onRequest(data);
   bars.draw();
   dynos.drawDynos();
@@ -192,6 +192,7 @@ var onRequestFunction = function(data) {
 };
 
 window.onload = function () {
+  $('.logo').addClass('invisible');
   var socket = io('https://Herokumon.herokuapp.com');
   socket.on('request', onRequestFunction);
 };
