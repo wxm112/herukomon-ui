@@ -7,8 +7,8 @@ var app = {
   requestsReceived: 0,
   requests: [],
   colours: {
-    '200s/300s': 'rgb(44, 160, 44)',
-    '400s': 'rgb(208, 87, 207)',
+    '200s/300s': '#8BC34A',
+    '400s': '#FFC107',
     '500s': 'rgb(236, 85, 85)'
   },
 
@@ -66,7 +66,7 @@ var bars = {
   },
 
   heightScale: function() {
-    return d3.scale.pow().exponent(.25)
+    return d3.scale.pow().exponent(.5)
       .domain([0, bars.MAX_REQUEST_TIME])
       .range([0, bars.MAX_BAR_HEIGHT]);
   },
@@ -204,29 +204,61 @@ var lines = {
     this.getSVG().selectAll('line title').data(this.totalDynos())
       .text(function(d) {
         var num = app.dynos[d]['200s/300s'] + app.dynos[d]['400s'] + app.dynos[d]['500s'];
-        console.log(num + " Requests");
         return num + " Requests";
       });
   },
 };
 
 var onRequestFunction = function(data) {
-  data.dyno = 'web.' + f(r(5));
-  if(r(100)<1) {
-    data.status = '503';
-  }
+  // app.requestsReceived++;
+
   app.onRequest(data);
-  bars.draw();
-  dynos.drawDynos();
-  lines.draw();
+
+  var doRedraw = function() {
+    bars.draw();
+    dynos.drawDynos();
+    lines.draw();
+    app.futureTimeout = null;
+  };
+
+  if(!app.futureTimeout) {
+    app.futureTimeout = setTimeout(doRedraw, 500);
+  }
+
 };
 
 window.onload = function() {
   setTimeout(function() {
     $('.logo').addClass('invisible');
   }, 2000);
-  setTimeout(function() {
-    var socket = io('https://Herokumon.herokuapp.com');
-    socket.on('request', onRequestFunction);
-  }, 500);
+
+  // DummyData generator
+
+  // app.createDummyData = function() {
+  //   var data = {date: '2015-03-26T09:48:54.276127+00:00',
+  //               dyno: 'web.1',
+  //               status: 200,
+  //               client: '188.226.184.152',
+  //               connect: 1,
+  //               service: 21,
+  //               bytes: 3159};
+
+  //   data.dyno = 'web.' + f(r(5));
+  //   data.status = 200;
+  //   if(r(100)<5) {
+  //     if(r(100)<70) {
+  //       data.status = 400;
+  //     } else {
+  //       data.status = 500;
+  //     }
+  //   }
+  //   data.service = f(r(1000));
+
+  //   onRequestFunction(data);
+  //   setTimeout(app.createDummyData, r(100));
+  // };
+  // app.createDummyData();
+
+  var socket = io('https://Herokumon.herokuapp.com');
+  socket.on('request', onRequestFunction);
 };

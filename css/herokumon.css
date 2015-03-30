@@ -42,8 +42,8 @@ html, body {
   text-align: center;
   color: #727272;
   position: fixed;
-  top: 20px;
-  left: 10px;
+  top: 20%;
+  left: 15%;
   opacity: 1;
   transition: opacity 5s, font-size 2s;
 }
