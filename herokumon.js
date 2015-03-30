@@ -99,7 +99,6 @@ var dynos = {
 
       this.charts[id] = c3.generate({
         bindto: '#donut-'+id, 
-        // transition: {duration: 1000},
         data: {
             columns: [
                 ['200s/300s', 0],
@@ -138,11 +137,6 @@ var lines = {
   totalDynos: function(){
     return Object.keys(app.dynos);
   },
-  xScale: function () { 
-    return d3.scale.linear()
-             .domain([0, 1440])
-             .range([375, 375+700]);
-  },
   strokeScale: function () { 
     return d3.scale.linear()
              .domain([0, 200])
@@ -168,12 +162,8 @@ var lines = {
       selection.exit()
       .remove();
 
-      selection.attr('x1', function(d,i) {
-                            if (i === 0){
-                              return lines.xScale()(lines.x());
-                            } else {
-                              return lines.xScale()(lines.x() + i * lines.x()*2);
-                            } 
+      selection.attr('x1', function() {
+                            return $(document).width()/2;
                     })
                 .attr('y1', 3)
                 .attr('x2', function(d,i) {
@@ -185,7 +175,6 @@ var lines = {
                     })
                 .attr('y2', lines.HEIGHT)
                 .attr('stroke-width', function(d){
-                  // debugger;
                   var num = app.dynos[d]['200s/300s']+ app.dynos[d]['400s']+app.dynos[d]['500s'];
                   return lines.strokeScale()(num);
                 })
@@ -195,7 +184,7 @@ var lines = {
 };
 
 var onRequestFunction = function(data) {
-  data.dyno = 'web.'+ f(r(3));
+  data.dyno = 'web.'+ f(r(2));
   app.onRequest(data);
   bars.draw();
   dynos.drawDynos();

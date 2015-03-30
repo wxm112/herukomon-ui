@@ -3,8 +3,9 @@
 <head>
   <meta charset="utf-8">
   <title>Herokumon</title>
-  <link rel="stylesheet" href="herokumon.css">
-  <link rel="stylesheet" href="c3.css">
+  <link rel="stylesheet" href="./css/herokumon.css">
+  <link rel="stylesheet" href="./css/c3.css">
+  <link href='http://fonts.googleapis.com/css?family=Kreon:700' rel='stylesheet' type='text/css'>
   <script src="https://herokumon.herokuapp.com/socket.io/socket.io.js" async></script>
   <script src="./lib/jquery.js" async></script>
   <script src="./lib/underscore.js" async></script>
@@ -13,6 +14,9 @@
   <script src="./herokumon.js" async></script>  
 </head>
 <body>
+  <div id="navbar">
+    <a id='logo' href="/">Herokumon</a>
+  </div>
   <div id="container">
     <div class="bars"></div>
     <div class="lines"></div>
