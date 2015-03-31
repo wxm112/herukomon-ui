@@ -199,18 +199,23 @@ var lines = {
         var num = app.dynos[d]['200s/300s'] + app.dynos[d]['400s'] + app.dynos[d]['500s'];
         return lines.strokeScale()(num);
       })
-      .attr('stroke', '#888');
+      .attr('stroke', '#888')
+      .on("mouseover", function(){
+          d3.select(this).attr('stroke', '#FFC107');
+      })
+      .on("mouseout", function(){
+          d3.select(this).attr('stroke', '#888');
+      });
 
     this.getSVG().selectAll('line title').data(this.totalDynos())
-      .text(function(d) {
+      .html(function(d) {
         var num = app.dynos[d]['200s/300s'] + app.dynos[d]['400s'] + app.dynos[d]['500s'];
-        return num + " Requests";
+        return "<text class='count'>" + num + "</text>" + " <strong>Requests</strong>";
       });
-  },
+    }
 };
 
 var onRequestFunction = function(data) {
-  // app.requestsReceived++;
   app.onRequest(data);
 
   var doRedraw = function() {
@@ -242,7 +247,7 @@ window.onload = function() {
   //               service: 21,
   //               bytes: 3159};
 
-  //   data.dyno = 'web.' + f(r(5));
+  //   data.dyno = 'web.' + f(r(3));
   //   data.status = 200;
   //   if(r(100)<5) {
   //     if(r(100)<70) {

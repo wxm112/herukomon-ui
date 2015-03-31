@@ -24,6 +24,11 @@ div.lines svg {
   margin-top: 0;
 }
 
+span {
+  color: red;
+}
+
+
 html, body {
   margin:0;
   padding:0;
@@ -34,7 +39,6 @@ html, body {
   margin: auto;
   margin-top: 8%;
 }
-
 
 .logo {
   font-family: 'Kreon', serif;
