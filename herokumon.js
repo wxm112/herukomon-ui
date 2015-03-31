@@ -1,6 +1,12 @@
-var f = function(value) { return Math.floor(value); };
-var r = function(max) { return Math.random() * max; };
-var s = function(value) { return Math.sqrt(value);  };
+var f = function(value) {
+  return Math.floor(value);
+};
+var r = function(max) {
+  return Math.random() * max;
+};
+var s = function(value) {
+  return Math.sqrt(value);
+};
 
 var app = {
   NUMBER_OF_REQUESTS_TO_SHOW: 200,
@@ -173,7 +179,7 @@ var lines = {
     return this.svg;
   },
 
-  draw: function() {
+  draw: function() { 
     var selection = this.getSVG().selectAll('line').data(this.totalDynos());
 
     selection.enter()
@@ -200,22 +206,24 @@ var lines = {
         return lines.strokeScale()(num);
       })
       .attr('stroke', '#888')
-      .on("mouseover", function(){
-          d3.select(this).attr('stroke', '#FFC107');
+      .on("mouseover", function(d) {
+        d3.select(this).attr('stroke', '#FFC107');
       })
-      .on("mouseout", function(){
-          d3.select(this).attr('stroke', '#888');
+      .on("mouseout", function(d) {
+        d3.select(this).attr('stroke', '#888');
       });
 
     this.getSVG().selectAll('line title').data(this.totalDynos())
-      .html(function(d) {
+      .text(function(d) {
         var num = app.dynos[d]['200s/300s'] + app.dynos[d]['400s'] + app.dynos[d]['500s'];
-        return "<text class='count'>" + num + "</text>" + " <strong>Requests</strong>";
+        return num + " Requests";
       });
-    }
+  }
 };
 
 var onRequestFunction = function(data) {
+
+  data.dyno = 'web.' + f(r(3));
   app.onRequest(data);
 
   var doRedraw = function() {
@@ -225,7 +233,7 @@ var onRequestFunction = function(data) {
     app.futureTimeout = null;
   };
 
-  if(!app.futureTimeout) {
+  if (!app.futureTimeout) {
     app.futureTimeout = setTimeout(doRedraw, 500);
   }
 
@@ -259,7 +267,7 @@ window.onload = function() {
   //   data.service = f(r(1000));
 
   //   onRequestFunction(data);
-  //   setTimeout(app.createDummyData, r(100));
+  //   setTimeout(app.createDummyData, r(1000));
   // };
   // app.createDummyData();
 
