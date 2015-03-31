@@ -211,13 +211,7 @@ var lines = {
 
 var onRequestFunction = function(data) {
   // app.requestsReceived++;
-
-console.log(data);
   app.onRequest(data);
-
-  data.service = parseInt(data.service);
-  data.connect = parseInt(data.connect);
-  data.status  = parseInt(data.status);
 
   var doRedraw = function() {
     bars.draw();
