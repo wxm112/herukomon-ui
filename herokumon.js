@@ -222,8 +222,6 @@ var lines = {
 };
 
 var onRequestFunction = function(data) {
-
-  data.dyno = 'web.' + f(r(3));
   app.onRequest(data);
 
   var doRedraw = function() {
