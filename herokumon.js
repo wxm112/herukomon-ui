@@ -212,7 +212,12 @@ var lines = {
 var onRequestFunction = function(data) {
   // app.requestsReceived++;
 
+console.log(data);
   app.onRequest(data);
+
+  data.service = parseInt(data.service);
+  data.connect = parseInt(data.connect);
+  data.status  = parseInt(data.status);
 
   var doRedraw = function() {
     bars.draw();
@@ -259,6 +264,6 @@ window.onload = function() {
   // };
   // app.createDummyData();
 
-  var socket = io('https://Herokumon.herokuapp.com');
+  var socket = io('https://herokumon.herokuapp.com');
   socket.on('request', onRequestFunction);
 };
