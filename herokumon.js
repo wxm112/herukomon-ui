@@ -1,4 +1,4 @@
-// For create dummy data.
+// For creating dummy data.
 
 var f = function(value) {
   return Math.floor(value);
@@ -30,8 +30,8 @@ var app = {
     attr("height", height);
   },
 
-  // Pushing requests data to the requests array, when the number of requests more than the NUMBER_OF_REQUESTS_TO_SHOW, 
-  // shifting the old requests out of the array. 
+  // Pushes requests data to the requests array. When the number of requests is greater 
+  // than NUMBER_OF_REQUESTS_TO_SHOW, shifts the old requests out of the array. 
   onRequest: function(request) {
     var shiftedRequest = null;
     this.requests.push(request);
@@ -44,8 +44,8 @@ var app = {
     };
   },
 
-  // Grouping the requests by dynos and the types of the status, and calculating the number for 
-  // each type of statuses for every dyno, then saving the data to the dynos hash. 
+  // Groups the requests by dynos and type of status, calculates the number of requests for 
+  // each status per dyno, which is saved to the dynos hash. 
   updateDynoStatus: function(request, n) {
     if (!this.dynos[request.dyno]) {
       this.dynos[request.dyno] = {
@@ -100,8 +100,8 @@ var bars = {
       .remove();
 
     selection
-    // Setting up the height for every bar chart,
-    // according to the service and connect time of the corresponding request.
+    // Sets up the height for every bar in the bar chart. Height correlates to
+    // request time = service + connect time of the corresponding request.
       .attr("height", function(d) {
         return bars.heightScale()(d.service + d.connect);
       })
@@ -125,12 +125,14 @@ var dynos = {
   getChart: function(key) {
     var id = key.match(/\d+?/);
 
-    // Setting up the class and id for donut charts.
+    // If there is no donut element for this particular dyno, creates a new one
+    // and saves that to the charts hash. The element is given an ID on the form
+    // "#donut-NN"
     donutElement = $('#donut-' + id);
     if (donutElement.length == 0) { // If this dyno div does not yet exist
       $('<div>').attr('id', 'donut-' + id).addClass('donut').appendTo($('.dynos'));
 
-      // Creating the donut chart template by using c3 liabrary. 
+      // Create the donut chart template by using c3 liabrary. 
       this.charts[id] = c3.generate({
         bindto: '#donut-' + id,
         data: {
@@ -150,7 +152,7 @@ var dynos = {
     return this.charts[id];
   },
 
-  // Matching a single dyno's data to the donut chart.
+  // Matches a single dyno's data to the donut chart.
   draw: function(key) {
     var dyno = app.dynos[key];
     var cols = Object.keys(dyno).map(function(k) {
@@ -163,7 +165,7 @@ var dynos = {
     $('.donut').css('width', width);
   },
 
-  // Drawing a donut chart for each dynos.
+  // Draws a donut chart for each dyno.
   drawDynos: function() {
     Object.keys(app.dynos).forEach(function(key) {
       dynos.draw(key);
@@ -177,7 +179,7 @@ var lines = {
   HEIGHT: 200,
   svg: null,
 
-  // Calculating how many dynos are there.
+  // Calculates how many dynos there are.
   totalDynos: function() {
     return Object.keys(app.dynos);
   },
@@ -188,7 +190,7 @@ var lines = {
       .range([0, 30]);
   },
 
-  // Calculating the x1 coordinate for the lines.
+  // Calculates the x1 coordinate for the lines.
   x: function() {
     return ($(document).width() / this.totalDynos().length + 1) / 2;
   },
@@ -222,8 +224,8 @@ var lines = {
         }
       })
       .attr('y2', lines.HEIGHT)
-      // Changing the thickness of the line, according to the number of received requests for 
-      // each dynos.
+      // Changes the thickness of the line according to the number of received requests for 
+      // each dyno.
       .attr('stroke-width', function(d) {
         var num = app.dynos[d]['200s/300s'] + app.dynos[d]['400s'] + app.dynos[d]['500s'];
         return lines.strokeScale()(num);
@@ -235,7 +237,7 @@ var lines = {
       .on("mouseout", function(d) {
         d3.select(this).attr('stroke', '#888');
       });
-    // Showing the requests number when hover over to a line.
+    // Shows the requests number when hovering over to a line.
     this.getSVG().selectAll('line title').data(this.totalDynos())
       .text(function(d) {
         var num = app.dynos[d]['200s/300s'] + app.dynos[d]['400s'] + app.dynos[d]['500s'];
@@ -254,7 +256,7 @@ var onRequestFunction = function(data) {
     app.futureTimeout = null;
   };
 
-  // Setting up a time to redraw the charts. 
+  // Redraw only this often
   if (!app.futureTimeout) {
     app.futureTimeout = setTimeout(doRedraw, 500);
   }
@@ -263,7 +265,7 @@ var onRequestFunction = function(data) {
 
 window.onload = function() {
 
-  // Setting up a time for the animation of the logo.
+  // Sets up a time for the animation (disappearance) of the logo.
   setTimeout(function() {
     $('.logo').addClass('invisible');
   }, 2000);
@@ -294,7 +296,7 @@ window.onload = function() {
   };
   app.createDummyData();
 
-  // Receiving the raw data from the service and passing it to the onRequestFunction.
+  // Receives the raw data from the service and passes it to the onRequestFunction.
   var socket = io('https://herokumon.herokuapp.com');
   socket.on('request', onRequestFunction);
 };
